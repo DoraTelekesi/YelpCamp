@@ -5,9 +5,19 @@ const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
 const campgrounds = require("../controllers/campgrounds");
 
+const multer = require("multer");
+const { storage } = require("../cloudinary");
+const upload = multer({ storage });
+
 const { isLoggedIn, isAuthor, validateCampground } = require("../middleware");
 
-router.route("/").get(catchAsync(campgrounds.index)).post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground));
+router
+  .route("/")
+  .get(catchAsync(campgrounds.index))
+  // .post(upload.array("image"), (req, res) => {
+  //   // res.send({ body: req.body, file: req.files });
+  // });
+  .post(isLoggedIn, upload.array("image"), validateCampground, catchAsync(campgrounds.createCampground));
 // router.get("/", catchAsync(campgrounds.index));
 
 router.get("/new", isLoggedIn, campgrounds.renderNewForm);
@@ -15,7 +25,7 @@ router.get("/new", isLoggedIn, campgrounds.renderNewForm);
 router
   .route("/:id")
   .get(catchAsync(campgrounds.showCampground))
-  .put(isLoggedIn, validateCampground, isAuthor, catchAsync(campgrounds.updateCampground))
+  .put(isLoggedIn, validateCampground, upload.array('image'),isAuthor, catchAsync(campgrounds.updateCampground))
   .delete(isAuthor, isLoggedIn, catchAsync(campgrounds.deleteCampground));
 
 //ORDER MATTER, IDs later!!

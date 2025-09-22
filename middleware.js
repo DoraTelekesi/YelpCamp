@@ -6,7 +6,7 @@ const Review = require("./models/review");
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
     //store the url they are requesting
-    console.log(req.path, req.originalUrl);
+    // console.log(req.path, req.originalUrl);
     req.session.returnTo = req.originalUrl;
     req.flash("error", "YOU must be signed in first");
     return res.redirect("/login");
@@ -53,7 +53,7 @@ module.exports.isReviewAuthor = async (req, res, next) => {
 
 module.exports.validateReview = (req, res, next) => {
   const { error } = reviewSchema.validate(req.body);
-  console.log(error);
+  // console.log(error);
   if (error) {
     const msg = error.details.map((el) => el.message).join(",");
     throw new ExpressError(msg, 400);
