@@ -4,7 +4,6 @@ if (process.env.NODE_ENV !== "production") {
 
 // require("dotenv").config();
 
-
 const sanitizeV5 = require("./utils/mongoSanitizeV5.js");
 const express = require("express");
 const path = require("path");
@@ -29,7 +28,7 @@ const userRoutes = require("./routes/users");
 const MongoStore = require("connect-mongo");
 
 // const dbUrl = process.env.DB_URL;
-const dbUrl = "mongodb://localhost:27017/yelp-camp";
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 
 main().catch((err) => console.log("Error", err));
 async function main() {
@@ -44,7 +43,6 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(sanitizeV5({ replaceWith: "_" }));
-
 
 const scriptSrcUrls = [
   "https://stackpath.bootstrapcdn.com",
@@ -87,13 +85,13 @@ app.use(
   })
 );
 
-
+const secret = process.env.SECRET || "thisshouldbeabettersecret!";
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   touchAfter: 24 * 60 * 60,
   crypto: {
-    secret: "thisshouldbeabettersecret!",
+    secret,
   },
 });
 
@@ -104,7 +102,7 @@ store.on("error", function (e) {
 const sessionConfig = {
   store,
   name: "blah",
-  secret: "thisshouldbeabettersecret",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -125,7 +123,6 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-
   res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
@@ -165,6 +162,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-app.listen(3000, () => {
-  console.log("Serving on Port 3000");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Serving on Port ${port}`);
 });
