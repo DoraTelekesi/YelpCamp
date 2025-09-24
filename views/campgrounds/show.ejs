@@ -1,11 +1,6 @@
 <% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/stylesheets/starts.css" />
 
-<script>
-  const maptilerApiKey = "<%- process.env.MAPTILER_API_KEY %>";
-  const campground = <%- JSON.stringify(campground) %>
-</script>
-
 <div class="row">
   <div class="col-6">
     <div id="map"></div>
@@ -87,7 +82,7 @@
       </div>
       <div class="mb-3">
         <label class="form-label" for="body">Review Text</label>
-        <textarea class="form-control" ame="review[body]" id="body" cols="30" rows="3" required></textarea>
+        <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
         <div class="valid-feedback">Looks good!</div>
       </div>
       <button class="btn btn-success">Submit</button>
@@ -111,5 +106,9 @@
     <% } %> <% } %>
   </div>
 </div>
+<script>
+  const maptilerApiKey = "<%- process.env.MAPTILER_API_KEY %>";
+  const campground = <%- JSON.stringify(campground) %>
+</script>
 
 <script src="/javascripts/showPageMap.js"></script>

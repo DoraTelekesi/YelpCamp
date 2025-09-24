@@ -25,7 +25,7 @@ router.get("/new", isLoggedIn, campgrounds.renderNewForm);
 router
   .route("/:id")
   .get(catchAsync(campgrounds.showCampground))
-  .put(isLoggedIn, validateCampground, upload.array('image'),isAuthor, catchAsync(campgrounds.updateCampground))
+  .put(isLoggedIn, upload.array("image"), validateCampground, isAuthor, catchAsync(campgrounds.updateCampground))
   .delete(isAuthor, isLoggedIn, catchAsync(campgrounds.deleteCampground));
 
 //ORDER MATTER, IDs later!!
